@@ -3015,44 +3015,51 @@ three/build/three.module.js:
 */
 ;
     return __dependency__;
-  };</script><script>var c = Object.create;
-var a = Object.defineProperty;
-var H = Object.getOwnPropertyDescriptor;
-var h = Object.getOwnPropertyNames;
-var p = Object.getPrototypeOf,
-  R = Object.prototype.hasOwnProperty;
-var m = (e, o) => a(e, "name", {
-  value: o,
+  };</script><script>var E = Object.create;
+var w = Object.defineProperty;
+var p = Object.getOwnPropertyDescriptor;
+var H = Object.getOwnPropertyNames;
+var R = Object.getPrototypeOf,
+  T = Object.prototype.hasOwnProperty;
+var a = (e, t) => w(e, "name", {
+  value: t,
   configurable: !0
 });
-var T = (e, o, t, s) => {
-  if (o && typeof o == "object" || typeof o == "function") for (let i of h(o)) !R.call(e, i) && i !== t && a(e, i, {
-    get: () => o[i],
-    enumerable: !(s = H(o, i)) || s.enumerable
+var W = (e, t, o, m) => {
+  if (t && typeof t == "object" || typeof t == "function") for (let r of H(t)) !T.call(e, r) && r !== o && w(e, r, {
+    get: () => t[r],
+    enumerable: !(m = p(t, r)) || m.enumerable
   });
   return e;
 };
-var l = (e, o, t) => (t = e != null ? c(p(e)) : {}, T(o || !e || !e.__esModule ? a(t, "default", {
+var S = (e, t, o) => (o = e != null ? E(R(e)) : {}, W(t || !e || !e.__esModule ? w(o, "default", {
   value: e,
   enumerable: !0
-}) : t, e));
-var n = l(require("/node_modules/three?_v=0.139.2&_env=prod"));
-var E = new n.PerspectiveCamera(70, window.innerWidth / window.innerHeight, .01, 10);
-E.position.z = 1;
-var w = new n.Scene(),
-  y = new n.BoxGeometry(.2, .2, .2),
-  g = new n.MeshNormalMaterial(),
-  d = new n.Mesh(y, g);
-w.add(d);
-var r = new n.WebGLRenderer({
+}) : o, e));
+var n = S(require("/node_modules/three?_v=0.139.2&_env=prod"));
+var g = window.innerWidth / window.innerHeight,
+  h = new n.PerspectiveCamera(70, g, .01, 10);
+h.position.z = 1;
+var s = new n.StereoCamera();
+s.aspect = .5;
+var d = new n.Scene(),
+  l = new n.BoxGeometry(.2, .2, .2),
+  u = new n.MeshNormalMaterial(),
+  c = new n.Mesh(l, u);
+d.add(c);
+var i = new n.WebGLRenderer({
   antialias: !0
 });
-r.setSize(window.innerWidth, window.innerHeight);
-r.setAnimationLoop(u);
-document.body.appendChild(r.domElement);
-function u(e) {
-  d.rotation.x = e / 2e3, d.rotation.y = e / 1e3, r.render(w, E);
+i.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(i.domElement);
+function C() {
+  s.update(h);
 }
-m(u, "animation");</script>
+a(C, "updateStereoCamera");
+function f(e) {
+  c.rotation.x = e / 2e3, c.rotation.y = e / 1e3, C(), i.setScissorTest(!0), i.setScissor(0, 0, window.innerWidth / 2, window.innerHeight), i.setViewport(0, 0, window.innerWidth / 2, window.innerHeight), i.render(d, s.cameraL), i.setScissor(window.innerWidth / 2, 0, window.innerWidth / 2, window.innerHeight), i.setViewport(window.innerWidth / 2, 0, window.innerWidth / 2, window.innerHeight), i.render(d, s.cameraR), i.setScissorTest(!1);
+}
+a(f, "animation");
+i.setAnimationLoop(f);</script>
   </body>
 </html>
