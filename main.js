@@ -1,30 +1,48 @@
 import * as THREE from 'three';
 
+// init
+const aspectRatio = window.innerWidth / window.innerHeight;
+const camera = new THREE.PerspectiveCamera(70, aspectRatio, 0.01, 10);
+camera.position.z = 1;
+
+const stereoCamera = new THREE.StereoCamera();
+stereoCamera.aspect = 0.5; // Dividing the screen into two halves
+
 const scene = new THREE.Scene();
 
-// Set up the WebGLRenderer, which handles rendering to the session's base layer.
-const renderer = new THREE.WebGLRenderer({
-    alpha: true,
-    preserveDrawingBuffer: true,
-    canvas: canvas,
-    context: gl
-});
-renderer.autoClear = false;
+const geometry = new THREE.BoxGeometry(0.2, 0.2, 0.2);
+const material = new THREE.MeshNormalMaterial();
 
-// The API directly updates the camera matrices.
-// Disable matrix auto updates so three.js doesn't attempt
-// to handle the matrices independently.
-const camera = new THREE.PerspectiveCamera();
-camera.matrixAutoUpdate = false;
+const mesh = new THREE.Mesh(geometry, material);
+scene.add(mesh);
 
-camera.position.z = 5;
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
 
-// Initialize a WebXR session using "immersive-ar".
-const session = await navigator.xr.requestSession("immersive-ar");
-session.updateRenderState({
-    baseLayer: new XRWebGLLayer(session, gl)
-});
+// update stereo camera
+function updateStereoCamera() {
+    stereoCamera.update(camera);
+}
 
-// A 'local' reference space has a native origin that is located
-// near the viewer's position at the time the session was created.
-const referenceSpace = await session.requestReferenceSpace('local');
+// animation
+function animation(time) {
+    mesh.rotation.x = time / 2000;
+    mesh.rotation.y = time / 1000;
+
+    updateStereoCamera();
+
+    renderer.setScissorTest(true);
+
+    renderer.setScissor(0, 0, window.innerWidth / 2, window.innerHeight);
+    renderer.setViewport(0, 0, window.innerWidth / 2, window.innerHeight);
+    renderer.render(scene, stereoCamera.cameraL);
+
+    renderer.setScissor(window.innerWidth / 2, 0, window.innerWidth / 2, window.innerHeight);
+    renderer.setViewport(window.innerWidth / 2, 0, window.innerWidth / 2, window.innerHeight);
+    renderer.render(scene, stereoCamera.cameraR);
+
+    renderer.setScissorTest(false);
+}
+
+renderer.setAnimationLoop(animation);
