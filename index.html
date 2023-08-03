@@ -13,33 +13,36 @@
 
 <!-- Starting an immersive WebXR session requires user interaction.
     We start this one with a simple button. -->
-<!--<button onclick="activateXR()">Start Hello WebXR</button>-->
-<script type="module">
-    import * as THREE from '../node_modules/three/build/three.module.js';
+<button onclick="activateVR()">Start Hello My VR</button>
+<script>
+    async function activateVR() {
+        // Add a canvas element and initialize a WebGL context that is compatible with WebXR.
+        const canvas = document.createElement("canvas");
+        document.body.appendChild(canvas);
+        const gl = canvas.getContext("webgl", {xrCompatible: true});
 
-    // init
-    const aspectRatio = window.innerWidth / window.innerHeight;
-    const camera = new THREE.PerspectiveCamera(70, aspectRatio, 0.01, 10);
-    camera.position.z = 1;
+        // init
+        const aspectRatio = window.innerWidth / window.innerHeight;
+        const myCam = new THREE.PerspectiveCamera(70, aspectRatio, 0.01, 10);
+        myCam.position.z = 1;
 
-    const stereoCamera = new THREE.StereoCamera();
-    stereoCamera.aspect = 0.5; // Dividing the screen into two halves
+        const stereoCamera = new THREE.StereoCamera();
+        stereoCamera.aspect = 0.5; // Dividing the screen into two halves
 
-    const scene = new THREE.Scene();
 
-    const geometry = new THREE.BoxGeometry(0.2, 0.2, 0.2);
-    const material = new THREE.MeshNormalMaterial();
+        const scene = new THREE.Scene();
 
-    const mesh = new THREE.Mesh(geometry, material);
-    scene.add(mesh);
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    document.body.appendChild(renderer.domElement);
+        const geometry = new THREE.BoxGeometry(0.2, 0.2, 0.2);
+        const material = new THREE.MeshNormalMaterial();
 
-    // update stereo camera
-    function updateStereoCamera() {
-        stereoCamera.update(camera);
+        const mesh = new THREE.Mesh(geometry, material);
+        scene.add(mesh);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        renderer.setAnimationLoop(animation);
     }
 
     // animation
@@ -47,7 +50,7 @@
         mesh.rotation.x = time / 2000;
         mesh.rotation.y = time / 1000;
 
-        updateStereoCamera();
+        stereoCamera.update(myCam);
 
         renderer.setScissorTest(true);
 
@@ -61,8 +64,6 @@
 
         renderer.setScissorTest(false);
     }
-
-    renderer.setAnimationLoop(animation);
 </script>
 </body>
 </html>
