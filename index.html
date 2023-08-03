@@ -11,12 +11,19 @@
 <button onclick="activateVR()">Start Hello My VR</button>
 <script>
     function activateVR() {
+        if (!window.WebGLRenderingContext) {
+            alert('Your browser does not support WebGL. Please use a modern browser.');
+            return;
+        }
+
         const aspectRatio = window.innerWidth / window.innerHeight;
         const camera = new THREE.PerspectiveCamera(70, aspectRatio, 0.01, 10);
         camera.position.z = 1;
 
+        console.log("Camera Position:", camera.position);
+
         const stereoCamera = new THREE.StereoCamera();
-        stereoCamera.aspect = 0.5; // Dividing the screen into two halves
+        stereoCamera.aspect = 0.5;
 
         const scene = new THREE.Scene();
 
@@ -27,6 +34,10 @@
         scene.add(mesh);
 
         const renderer = new THREE.WebGLRenderer({ antialias: true });
+        if (!renderer) {
+            alert('WebGL Renderer could not be created.');
+            return;
+        }
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
 
