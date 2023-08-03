@@ -10,18 +10,13 @@
 <body>
 <button onclick="activateVR()">Start Hello My VR</button>
 <script>
-    async function activateVR() {
-        const canvas = document.createElement("canvas");
-        document.body.appendChild(canvas);
-        const gl = canvas.getContext("webgl", {xrCompatible: true});
-
+    function activateVR() {
         const aspectRatio = window.innerWidth / window.innerHeight;
-        const myCam = new THREE.PerspectiveCamera(70, aspectRatio, 0.01, 10);
-        myCam.position.z = 1;
+        const camera = new THREE.PerspectiveCamera(70, aspectRatio, 0.01, 10);
+        camera.position.z = 1;
 
         const stereoCamera = new THREE.StereoCamera();
-        stereoCamera.aspect = 0.5;
-        stereoCamera.eyeSep = 0.02; // Eye separation
+        stereoCamera.aspect = 0.5; // Dividing the screen into two halves
 
         const scene = new THREE.Scene();
 
@@ -31,15 +26,21 @@
         const mesh = new THREE.Mesh(geometry, material);
         scene.add(mesh);
 
-        const renderer = new THREE.WebGLRenderer({ canvas: canvas, context: gl, antialias: true });
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
 
-        // Animation function is now inside activateVR
+        // Update stereo camera
+        function updateStereoCamera() {
+            stereoCamera.update(camera);
+        }
+
+        // Animation
         function animation(time) {
             mesh.rotation.x = time / 2000;
             mesh.rotation.y = time / 1000;
 
-            stereoCamera.update(myCam);
+            updateStereoCamera();
 
             renderer.setScissorTest(true);
 
