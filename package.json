@@ -1,9 +1,5 @@
 {
   "dependencies": {
     "three": "0.139.2"
-  },
-  "scripts": {
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
   }
 }
