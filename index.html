@@ -1,34 +1,42 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>Hello, World! - A-Frame</title>
-    <meta name="description" content="Hello, World! - A-Frame">
-    <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
-    <script>
-      AFRAME.registerComponent('follow-shadow', {
-        schema: {type: 'selector'},
-        init() {this.el.object3D.renderOrder = -1;},
-        tick() {
-          if (this.data) {
-            this.el.object3D.position.copy(this.data.object3D.position);
-            this.el.object3D.position.y-=0.001; // stop z-fighting
-          }
+<head>
+  <meta charset="utf-8">
+  <title>Hello, World! - A-Frame</title>
+  <meta name="description" content="Hello, World! - A-Frame">
+  <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+  <script>
+    AFRAME.registerComponent('follow-shadow', {
+      schema: {type: 'selector'},
+      init() {this.el.object3D.renderOrder = -1;},
+      tick() {
+        if (this.data) {
+          this.el.object3D.position.copy(this.data.object3D.position);
+          this.el.object3D.position.y-=0.001; // stop z-fighting
         }
-      });
-    </script>
-  </head>
-  <body>
-  <a-scene reflection="directionalLight:a-light[type=directional]" ar-hit-test="target:#objects;" renderer="physicallyCorrectLights:true;colorManagement:true;exposure:1;toneMapping:ACESFilmic;" shadow="type:pcfsoft" xr-mode-ui="XRMode: xr">
-    <a-light type="directional" light="castShadow:true;" position="1 1 1" intensity="0.5" shadow-camera-automatic="#objects"></a-light>
-    <a-camera position="0 0.4 0" wasd-controls="acceleration:10;"></a-camera>
+      }
+    });
+  </script>
+</head>
+<body>
+<a-scene reflection="directionalLight:a-light[type=directional]" ar-hit-test="target:#objects;" renderer="physicallyCorrectLights:true;colorManagement:true;exposure:1;toneMapping:ACESFilmic;" shadow="type:pcfsoft" xr-mode-ui="XRMode: xr">
+  <a-light type="directional" light="castShadow:true;" position="1 1 1" intensity="0.5" shadow-camera-automatic="#objects"></a-light>
+  <a-camera position="0 0.4 0" wasd-controls="acceleration:10;"></a-camera>
 
-    <a-assets>
-      <a-asset-item id="cesiumTruck" src="https://raw.githubusercontent.com/ZAKosma/zakosma.github.io/main/nike.gltf"></a-asset-item>
-    </a-assets>
-    <a-entity id="logo" position="-.5 -1 -1.2" rotation="81 45 0" scale="25 25 25" gltf-model="#cesiumTruck"></a-entity>
-    <a-plane follow-shadow="#objects" material="shader:shadow" shadow="cast:false;" rotation="-90 0 0" width="2" height="2"></a-plane>
-    <a-sky color="#333333" hide-on-enter-ar></a-sky>
-  </a-scene>
-  </body>
+  <a-assets>
+    <a-asset-item id="cesiumTruck" src="https://raw.githubusercontent.com/ZAKosma/zakosma.github.io/main/nike.gltf"></a-asset-item>
+  </a-assets>
+
+  <!-- Wrapper entity to adjust pivot and rotation -->
+  <a-entity id="logo-wrapper" position="-.5 -1 -1.2" rotation="0 45 0" scale="25 25 25"
+            animation="property: rotation; to: 0 405 0; loop: true; dur: 5000; easing: linear;">
+    <a-entity id="logo" gltf-model="#cesiumTruck"
+              material="color: #FFF;"
+              animation__color="property: material.color; to: #FF0000; dir: alternate; dur: 2000; loop: true; easing: easeInOutSine;"></a-entity>
+  </a-entity>
+
+  <a-plane follow-shadow="#objects" material="shader:shadow" shadow="cast:false;" rotation="-90 0 0" width="2" height="2"></a-plane>
+  <a-sky color="#333333" hide-on-enter-ar></a-sky>
+</a-scene>
+</body>
 </html>
